@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/surafelbkassa/ai-classifier/classifier"
+	classifier "github.com/surafelbkassa/ai-classifier/classifer"
 	"github.com/surafelbkassa/ai-classifier/models"
 )
 
