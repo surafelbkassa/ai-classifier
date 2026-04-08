@@ -14,10 +14,10 @@ Client → Go HTTP Server → Python ML Model → Response
 
  ML Details
 
-- **Algorithm**: Logistic Regression
-- **Features**: TF-IDF vectorizer (unigrams + bigrams)
-- **Training data**: 30 labeled emails (expandable)
-- **Priority mapping**: Work→high, Personal→medium, Spam→low
+- Algorithm: Logistic Regression
+- Features: TF-IDF vectorizer (unigrams + bigrams)
+- Training data: 30 labeled emails (expandable)
+- Priority mapping: Work→high, Personal→medium, Spam→low
 
 ## API
 
@@ -39,10 +39,10 @@ Response:
 ## Run
 
 ```bash
- Terminal 1 - Train & serve ML
+Terminal 1 - Train & serve ML
 python3 ml_model.py && python3 predict.py
 
- Terminal 2 - Go server
+Terminal 2 - Go server
 go run main.go
 ```
 
@@ -51,7 +51,4 @@ go run main.go
 - Add confidence threshold rejection
 - Retrain pipeline with human feedback
 - Upgrade to DistilBERT for context understanding
-```
-
-
 
