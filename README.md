@@ -1,10 +1,10 @@
 # ai-classifier
 ```markdown
-# AI Email Classifier
+ AI Email Classifier
 
 Go + Python ML service that classifies emails as **Spam**, **Work**, or **Personal**.
 
-## Architecture
+ Architecture
 
 ```
 Client → Go HTTP Server → Python ML Model → Response
@@ -12,7 +12,7 @@ Client → Go HTTP Server → Python ML Model → Response
          Fallback Rules (if ML down)
 ```
 
-## ML Details
+ ML Details
 
 - **Algorithm**: Logistic Regression
 - **Features**: TF-IDF vectorizer (unigrams + bigrams)
@@ -39,10 +39,10 @@ Response:
 ## Run
 
 ```bash
-# Terminal 1 - Train & serve ML
+ Terminal 1 - Train & serve ML
 python3 ml_model.py && python3 predict.py
 
-# Terminal 2 - Go server
+ Terminal 2 - Go server
 go run main.go
 ```
 
@@ -53,5 +53,5 @@ go run main.go
 - Upgrade to DistilBERT for context understanding
 ```
 
----
+
 
