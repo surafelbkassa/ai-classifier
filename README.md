@@ -19,9 +19,9 @@ Client → Go HTTP Server → Python ML Model → Response
 - Training data: 30 labeled emails (expandable)
 - Priority mapping: Work→high, Personal→medium, Spam→low
 
-## API
+API
 
-```bash
+bash
 curl -X POST http://localhost:8080/classify \
   -H "Content-Type: application/json" \
   -d '{"text":"urgent meeting at 3pm"}'
