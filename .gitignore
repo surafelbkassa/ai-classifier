@@ -1,0 +1,14 @@
+# Binary model files
+*.pkl
+
+# Python cache
+*.pyc
+__pycache__/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
