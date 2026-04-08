@@ -1,31 +1,31 @@
 package classifier
 
 import (
-	"os/exec"
 	"encoding/json"
+	"os/exec"
 	"strings"
 )
 
 // This calls Python ML model
 func Classify(text string) (string, string) {
 	// Call Python script
-	cmd := exec.Command("python3", "predict.py", text)
+	cmd := exec.Command("python", "predict.py", text)
 	output, err := cmd.Output()
 	if err != nil {
 		return fallbackClassify(text), "medium"
 	}
-	
+
 	var result struct {
 		Category string `json:"category"`
 	}
 	json.Unmarshal(output, &result)
-	
+
 	priority := map[string]string{
 		"spam":     "low",
 		"work":     "high",
 		"personal": "medium",
 	}[result.Category]
-	
+
 	return result.Category, priority
 }
 
