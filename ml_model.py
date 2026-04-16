@@ -1,67 +1,63 @@
+# ml_model.py
+# Run this AFTER load_enron_data.py
+
 import joblib
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
 
-# Training data (expand this!)
-# emails = [
-#     ("Free money click here", "spam"),
-#     ("You won a million dollars", "spam"),
-#     ("Buy now limited offer", "spam"),
-#     ("Meeting at 3pm urgent", "work"),
-#     ("Deadline tomorrow please finish", "work"),
-#     ("Client called need response ASAP", "work"),
-#     ("Hey how are you doing", "personal"),
-#     ("Let's get coffee sometime", "personal"),
-#     ("Happy birthday friend", "personal"),
-emails = [
-    # Spam (10 examples)
-    ("Free money click here", "spam"),
-    ("You won a million dollars", "spam"),
-    ("Buy now limited offer", "spam"),
-    ("Congratulations you are a winner", "spam"),
-    ("Lowest price ever sale", "spam"),
-    ("Claim your prize today", "spam"),
-    ("100% free gift card", "spam"),
-    ("Investment opportunity double your money", "spam"),
-    ("You've been selected", "spam"),
-    ("Act now limited time", "spam"),
-    
-    # Work / Urgent (10 examples)
-    ("Meeting at 3pm urgent", "work"),
-    ("Deadline tomorrow please finish", "work"),
-    ("Client called need response ASAP", "work"),
-    ("Quarterly report due Friday", "work"),
-    ("Server down fix immediately", "work"),
-    ("Please review this document by EOD", "work"),
-    ("Schedule changed team meeting", "work"),
-    ("Urgent: production issue", "work"),
-    ("Your task is overdue", "work"),
-    ("Manager requested update", "work"),
-    
-    # Personal (10 examples)
-    ("Hey how are you doing", "personal"),
-    ("Let's get coffee sometime", "personal"),
-    ("Happy birthday friend", "personal"),
-    ("See you at the party", "personal"),
-    ("Thanks for yesterday", "personal"),
-    ("Miss you let's catch up", "personal"),
-    ("Dinner tonight?", "personal"),
-    ("Weekend plans?", "personal"),
-    ("Great talking to you", "personal"),
-    ("Thinking of you", "personal"),
-]
+# Load the balanced dataset from the CSV file
+print("Loading labeled email data...")
+df = pd.read_csv('enron_balanced.csv')
 
+print(f"Loaded {len(df)} emails")
+print(f"Label distribution:")
+print(df['label'].value_counts())
 
-texts, labels = zip(*emails)
+# Split into features (X) and target (y)
+X = df['message'].values
+y = df['label'].values
+
+# Split into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, stratify=y
+)
+
+print(f"\nTraining set: {len(X_train)} emails")
+print(f"Test set: {len(X_test)} emails")
 
 # Vectorize and train
-vectorizer = TfidfVectorizer()
-X = vectorizer.fit_transform(texts)
-model = LogisticRegression()
-model.fit(X, labels)
+print("\nTraining model...")
+vectorizer = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
+X_train_vec = vectorizer.fit_transform(X_train)
 
-# Save
+model = LogisticRegression(C=1.0, max_iter=1000)
+model.fit(X_train_vec, y_train)
+
+# Evaluate
+X_test_vec = vectorizer.transform(X_test)
+accuracy = model.score(X_test_vec, y_test)
+print(f"\n✅ Model accuracy on test set: {accuracy:.2%}")
+
+# Save model and vectorizer
 joblib.dump(model, 'model.pkl')
 joblib.dump(vectorizer, 'vectorizer.pkl')
 
-print("✅ ML model trained with Logistic Regression")
+print("\n✅ Model saved to 'model.pkl'")
+print("✅ Vectorizer saved to 'vectorizer.pkl'")
+
+# Test on a few examples
+test_emails = [
+    "urgent meeting at 3pm",
+    "free money click here",
+    "let's get coffee this weekend"
+]
+
+print("\n--- Testing on sample emails ---")
+for email in test_emails:
+    X_sample = vectorizer.transform([email])
+    pred = model.predict(X_sample)[0]
+    proba = model.predict_proba(X_sample)[0]
+    confidence = max(proba)
+    print(f"'{email}' → {pred} (confidence: {confidence:.1%})")
